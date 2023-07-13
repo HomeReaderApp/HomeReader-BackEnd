@@ -2,7 +2,7 @@ const User = require('../models/users')
 
 // This function gets a list of all teacher users
 const getUsers = async (request, response) => {
-    users = await User.find()
+    let users = await User.find()
     response.json({
         users: users
     })
@@ -10,7 +10,7 @@ const getUsers = async (request, response) => {
 
 // Finds a specific user by id
 const getUserById = async (request, response) => {
-    user = await User.findOne({id:request.id})
+    let user = await User.findOne({id:request.id})
     response.json({
         "user": user
     })
@@ -35,8 +35,14 @@ const userRegister = async (request, response) => {
     })
 }
 
+// Find the user by username and password in the database. Create a jwt to login.
 const loginUser = (request, response) => {
-    
+
+}
+
+// logout user
+const logOutUser = (request, response) => {
+
 }
 
 module.exports = {
