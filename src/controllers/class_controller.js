@@ -1,10 +1,11 @@
 const Class = require('../models/classes')
 
-const getClass = async (request, response) => {
-    let classList = await Class.find({name: request.body.name})
-    response.json(classList)
+// Gets a list of all the classes
+const getAllClasses = async (request, response) => {
+    let allClasses = await Class.find()
+    response.json(allClasses)
 }
-
+// Creates a new class
 const createClass = async (request, response) => {
     let newClass = new Class({
         className : request.body.className
@@ -18,6 +19,6 @@ const createClass = async (request, response) => {
 }
 
 module.exports = {
-    getClass,
+    getAllClasses,
     createClass
 }

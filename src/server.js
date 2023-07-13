@@ -79,6 +79,9 @@ app.use('/user', userRouter)
 const classRouter = require('./routes/class_routes.js')
 app.use('/class', classRouter)
 
+const studentRouter = require('./routes/student_routes.js')
+app.use('/student', studentRouter)
+
 app.get('*', (request, response) =>{
 	response.status(404)
 	response.json({
