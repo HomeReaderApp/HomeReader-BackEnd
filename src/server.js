@@ -73,6 +73,9 @@ app.get('/', (request, response) => {
     })
 })
 
+const userRouter = require('./routes/user_routes.js')
+app.use('/user', userRouter)
+
 app.get('*', (request, response) =>{
 	response.status(404)
 	response.json({
