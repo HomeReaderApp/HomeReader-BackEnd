@@ -8,7 +8,7 @@ const classSchema = new mongoose.Schema({
   teacherId: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'TeacherUser', 
-    required: true 
+    required: true
   },
 });
 

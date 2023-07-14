@@ -73,14 +73,11 @@ app.get('/', (request, response) => {
     })
 })
 
-const userRouter = require('./routes/user_routes.js')
-app.use('/user', userRouter)
+const teacherUserRouter = require('./routes/teacher_routes.js')
+app.use('/teacher', teacherUserRouter)
 
-const classRouter = require('./routes/class_routes.js')
-app.use('/class', classRouter)
-
-const studentRouter = require('./routes/student_routes.js')
-app.use('/student', studentRouter)
+// const classRouter = require('./routes/class_routes.js')
+// app.use('/class', classRouter)
 
 app.get('*', (request, response) =>{
 	response.status(404)
