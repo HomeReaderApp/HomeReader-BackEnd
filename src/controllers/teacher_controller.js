@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 const TeacherUser = require('../models/teacherUser')
 
 // This function gets a list of all teacher users
@@ -51,14 +52,53 @@ async function registerUser(request, response) {
   }
 }
 
+// Function to log a registered user in. 
+// First needs to check that the user exists
+// then needs to check that the password matches
+// next needs to issue a JWT token
+async function loginUser(request, response) {
+  try {
+    // Find the user by the provided username
+    const user = await TeacherUser.findOne({ username: request.body.username });
+    if (!user) {
+      return response.status(401).json({ error: 'Invalid username' });
+    }
 
+    // Compare the provided password with the hashed password stored in the database
+    const passwordMatch = await bcrypt.compare(request.body.password, user.password);
+    if (!passwordMatch) {
+      return response.status(401).json({ error: 'Invalid username or password' });
+    }
+
+    // Password is correct, authentication successful
+    // generate a JWT token 
+    const token = jwt.sign({ userId: user._id }, 'your_secret_key', { expiresIn: '1h' });
+
+   // Return the token in the response
+    return response.status(200).json({ token });
+    } catch (error) {
+    // Handle any errors that occur during login
+    return response.status(500).json({ error: 'Failed to login' });
+    }
+}
 
 // // logout user
-// const logOutUser = (request, response) => {
-
-// }
-
+async function logoutUser(request, response) {
+    try {
+      // Delete the JWT token from the client-side
+      response.clearCookie('jwtToken'); 
+  
+      // Return a success response
+      return response.status(200).json({ message: 'Logout successful' });
+    } catch (error) {
+      // Handle any errors that occur during logout
+      return response.status(500).json({ error: 'Failed to logout' });
+    }
+  }
+  
 module.exports = {
     getTeacherUsers,
-    registerUser
+    registerUser,
+    loginUser,
+    logoutUser
 }
