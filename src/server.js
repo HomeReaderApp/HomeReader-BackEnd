@@ -73,6 +73,12 @@ app.get('/', (request, response) => {
     })
 })
 
+const teacherUserRouter = require('./routes/teacher_routes.js')
+app.use('/teacher', teacherUserRouter)
+
+// const classRouter = require('./routes/class_routes.js')
+// app.use('/class', classRouter)
+
 app.get('*', (request, response) =>{
 	response.status(404)
 	response.json({
