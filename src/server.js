@@ -76,8 +76,9 @@ app.get('/', (request, response) => {
 const teacherUserRouter = require('./routes/teacher_routes.js')
 app.use('/teacher', teacherUserRouter)
 
-const classRouter = require('./routes/class_routes.js')
-app.use('/class', classRouter)
+const classRouter = require('./routes/class_routes.js');
+const authenticateMiddleware = require('./middlewares/authenticateMiddleware.js');
+app.use('/class', authenticateMiddleware, classRouter)
 
 app.get('*', (request, response) =>{
 	response.status(404)

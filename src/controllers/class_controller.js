@@ -1,12 +1,15 @@
-const Class = require('../models/Class');
+const Class = require('../models/class');
 
 // function for a teacher to create a class
 async function createClass(request, response) {
+    const userId = request.user._id;
+    console.log(userId)
   try {
     // Create a new class
     const newClass = new Class({
       classname: request.body.className,
-      teacher: request.user._id, 
+      teacher: userId
+        
     });
 
     // Save the class to the database
@@ -23,5 +26,6 @@ async function createClass(request, response) {
 module.exports = {
   createClass,
 };
+
 
 
