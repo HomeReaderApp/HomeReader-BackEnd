@@ -18,7 +18,7 @@ async function createClass(request, response) {
     response.status(500).json({ error: 'Failed to create class' });
   }
 }
-
+// Get all of a teachers classes
 async function getTeacherClasses(request, response){
   try{
     let classes = await Class.find({teacherId : request.params.teacherId})
