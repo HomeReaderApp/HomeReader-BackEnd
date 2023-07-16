@@ -1,31 +1,38 @@
 const Class = require('../models/class');
 
-// function for a teacher to create a class
+// Controller method for creating a new class
 async function createClass(request, response) {
-    const userId = request.user._id;
-    console.log(userId)
   try {
-    // Create a new class
+    // Create a new instance of the Class model
     const newClass = new Class({
-      classname: request.body.className,
-      teacher: userId
-        
+      className: request.body.className,
+      teacherId: request.body.teacherId
     });
 
-    // Save the class to the database
-    await newClass.save();
+    // Save the new class to the database
+    const savedClass = await newClass.save();
 
-    // Return a success response
-    return response.status(201).json({ message: 'Class created successfully' });
+    response.status(201).json(savedClass);
   } catch (error) {
-    // Handle any errors that occur during class creation
-    return response.status(500).json({ error: 'Failed to create class' });
+    console.error('Error creating class:', error);
+    response.status(500).json({ error: 'Failed to create class' });
   }
 }
 
+async function getTeacherClasses(request, response){
+  try{
+    classes = await Class.find({teacherId : request.params.teacherId})
+    response.status(200).json(classes);
+  } catch (error) {
+    console.error('Error retrieving classes:', error);
+    response.status(500).json({ error: 'Failed to retrieve classes' });
+  }
+}
+
+
 module.exports = {
   createClass,
+  getTeacherClasses
 };
-
 
 
