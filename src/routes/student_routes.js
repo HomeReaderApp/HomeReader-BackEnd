@@ -1,8 +1,10 @@
 const express = require('express')
 const studentRouter = express.Router()
-const { createStudent, deleteStudent, getStudentsByClass } = require('../controllers/student_controller')
+const { createStudent, updateStudent, deleteStudent, getStudentsByClass } = require('../controllers/student_controller')
 
 studentRouter.post('/', createStudent)
+
+studentRouter.put('/:studentId', updateStudent)
 
 studentRouter.delete('/:studentId', deleteStudent)
 

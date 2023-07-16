@@ -20,6 +20,31 @@ const createStudent = async (request, response) => {
   }
 };
 
+// Update a student by ID
+const updateStudent = async (request, response) => {
+    try {
+      // Retrieve the student ID from the request parameters
+      const studentId = request.params.studentId;
+  
+      // Find the student by ID and update its properties
+      const updatedStudent = await Student.findByIdAndUpdate(
+        studentId,
+        {
+          studentName: request.body.studentName,
+          yearLevel: request.body.Level,
+          loginCode: request.body.loginCode,
+          classId: request.body.classId
+        },
+        { new: true }
+      );
+  
+      response.status(200).json({ student: updatedStudent });
+    } catch (error) {
+      console.error(error);
+      response.status(500).json({ message: 'Error updating student' });
+    }
+  };
+
 // Delete a student by ID
 const deleteStudent = async (request, response) => {
     try {
@@ -48,6 +73,7 @@ const getStudentsByClass = async (request, response) => {
 
 module.exports = { 
     createStudent, 
+    updateStudent,
     deleteStudent,
     getStudentsByClass 
 };
