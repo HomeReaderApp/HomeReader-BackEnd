@@ -21,7 +21,7 @@ async function createClass(request, response) {
 
 async function getTeacherClasses(request, response){
   try{
-    classes = await Class.find({teacherId : request.params.teacherId})
+    let classes = await Class.find({teacherId : request.params.teacherId})
     response.status(200).json(classes);
   } catch (error) {
     console.error('Error retrieving classes:', error);
@@ -29,10 +29,28 @@ async function getTeacherClasses(request, response){
   }
 }
 
+// Get a specific teacher's class
+async function getTeacherClass(request, response) {
+  try {
+    // Find the specified class by its ID and teacherId
+    const teacherClass = await Class.findOne({ className: request.params.className, teacherId: request.params.teacherId });
+
+    if (!teacherClass) {
+      return response.status(404).json({ error: 'Class not found' });
+    }
+
+    response.status(200).json(teacherClass);
+  } catch (error) {
+    console.error('Error retrieving class:', error);
+    response.status(500).json({ error: 'Failed to retrieve class' });
+  }
+}
 
 module.exports = {
   createClass,
-  getTeacherClasses
+  getTeacherClasses,
+  getTeacherClass
 };
+
 
 
