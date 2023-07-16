@@ -3,6 +3,7 @@ const classRouter = express.Router();
 // const authenticateMiddleware = require('../middlewares/authenticateMiddleware');
 const Class = require('../models/class');
 const { createClass, getTeacherClasses, getTeacherClass } = require('../controllers/class_controller')
+// const authenticate = require('../middlewares/authenticateMiddleware')
 
 
 // Create a class for the authenticated teacher user
