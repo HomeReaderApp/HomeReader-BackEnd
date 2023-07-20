@@ -7,8 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "NODE_ENV=production node src/index.js",
     "dev": "nodemon src/index.js",
-    "seed" : "SEED=true NODE_ENV=development",
-    "wipe": "WIPE=true NODE_ENV=development"
+    "seed" : "SEED=true NODE_ENV=development node src/seeds.js",
+    "wipe": "WIPE=true NODE_ENV=development node src/seeds.js"
   },
   "keywords": [],
   "author": "",

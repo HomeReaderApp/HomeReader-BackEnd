@@ -8,6 +8,8 @@ const teacherUserSchema = new mongoose.Schema({
     password: { type: String, required: true },
   });
 
-const teacherUser = mongoose.model('teacherUser', teacherUserSchema);
+const TeacherUser = mongoose.model('teacherUser', teacherUserSchema);
 
-module.exports = teacherUser;
+module.exports = TeacherUser;
+
+
