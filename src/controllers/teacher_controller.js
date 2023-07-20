@@ -72,7 +72,7 @@ async function loginUser(request, response) {
 
     // Password is correct, authentication successful
     // generate a JWT token 
-    const token = jwt.sign({ userId: user._id }, 'your_secret_key', { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user._id }, 'your_secret_key', { expiresIn: '1d' });
 
    // Return the token in the response
     return response.status(200).json({ token });
