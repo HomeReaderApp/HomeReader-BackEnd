@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const TeacherUser = require('../models/teacherUser')
+const { createToken } = require("../services/auth_services")
 
 // This function gets a list of all teacher users
 const getTeacherUsers = async (request, response) => {
@@ -15,8 +16,6 @@ const getTeacherUsers = async (request, response) => {
 
 async function registerUser(request, response) {
   try {
-    // const { firstName, lastName, schoolName, username, password } = req.body;
-
     // Check if the username is already taken
     const existingUser = await TeacherUser.findOne({ username: request.body.username });
     if (existingUser) {
@@ -25,27 +24,25 @@ async function registerUser(request, response) {
       .json({ error: 'Username is already taken' });
     }
 
-    // Generate a salt for password hashing
-    const saltRounds = 10;
-    const salt = await bcrypt.genSalt(saltRounds);
-
-    // Hash the password using the generated salt
-    const hashedPassword = await bcrypt.hash(request.body.password, salt);
-
     // Create a new user
-    const newUser = new TeacherUser({
+    let newUser = new TeacherUser({
       firstName: request.body.firstName,
       lastName: request.body.lastName,
       schoolName: request.body.schoolName,
       username: request.body.username,
-      password: hashedPassword
+      password: bcrypt.hashSync(
+        request.body.password, 
+        bcrypt.genSaltSync(10))
+        
     });
 
     // Save the user to the database
     await newUser.save();
+    // return response.status(201).json({ message: 'User registered successfully' });
+    const token = createToken(newUser._id, newUser.username)
 
     // Return a success response
-    return response.status(201).json({ message: 'User registered successfully' });
+    return response.status(201).json({ message: 'User registered successfully', token: token });
   } catch (error) {
     // Handle any errors that occur during registration
     return response.status(500).json({ error: 'Failed to register user' });
@@ -72,7 +69,7 @@ async function loginUser(request, response) {
 
     // Password is correct, authentication successful
     // generate a JWT token 
-    const token = jwt.sign({ userId: user._id }, 'your_secret_key', { expiresIn: '1d' });
+    const token = createToken(request.body._id, request.body.username)
 
    // Return the token in the response
     return response.status(200).json({ token });

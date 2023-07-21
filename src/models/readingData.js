@@ -13,6 +13,9 @@ const readingFormDataSchema = new mongoose.Schema({
   comments: { 
     type: String 
 },
+  createdAtDate: {
+    type: Date
+  },
   student: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Student', 
