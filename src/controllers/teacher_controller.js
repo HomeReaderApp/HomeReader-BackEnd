@@ -61,23 +61,21 @@ async function loginUser(request, response) {
       return response.status(401).json({ error: 'Invalid username' });
     }
 
-    // Compare the provided password with the hashed password stored in the database
-    const passwordMatch = await bcrypt.compare(request.body.password, user.password);
-    if (!passwordMatch) {
-      return response.status(401).json({ error: 'Invalid username or password' });
-    }
-
-    // Password is correct, authentication successful
-    // generate a JWT token 
-    const token = createToken(request.body._id, request.body.username)
-
-   // Return the token in the response
-    return response.status(200).json({ token });
+    if(bcrypt.compareSync(request.body.password, user.password)){
+      const token = createToken(user._id, user.username)
+      return response.json({
+        username: user.username,
+        token: token
+      })
+    } else {
+      response.status(401).json({ error: 'Wrong password' });
+      }
     } catch (error) {
     // Handle any errors that occur during login
     return response.status(500).json({ error: 'Failed to login' });
     }
 }
+
 
 // // logout user
 async function logoutUser(request, response) {

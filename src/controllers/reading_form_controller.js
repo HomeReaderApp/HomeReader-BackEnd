@@ -8,7 +8,8 @@ async function postReadingForm(request, response) {
       bookName: request.body.bookName,
       rating: request.body.rating,
       comments: request.body.comments,
-      student: request.body.studentId
+      student: request.body.studentId,
+      date: Date.now()
     });
 
     const readingData = await newReadingForm.save();
