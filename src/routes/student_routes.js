@@ -1,8 +1,9 @@
 const express = require('express')
 const studentRouter = express.Router()
 const { createStudent, updateStudent, deleteStudent, getStudentsByClass } = require('../controllers/student_controller')
+const { isAuthenticated, isClassOwner } = require('../middlewares/user_middleware')
 
-studentRouter.post('/:classId', createStudent)
+studentRouter.post('/:classId', isAuthenticated, isClassOwner, createStudent)
 
 studentRouter.put('/:studentId', updateStudent)
 

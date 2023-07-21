@@ -19,9 +19,8 @@ const createStudent = async (request, response) => {
 
     // Save the new student to the database
     await newStudent.save();
-    const targetClass = await Class.findById(classId)
-    targetClass.students.push(newStudent._id)
-    await targetClass.save()
+    request.targetClass.students.push(newStudent._id);
+    await request.targetClass.save()
 
     response.status(201).json(newStudent);
   } catch (error) {

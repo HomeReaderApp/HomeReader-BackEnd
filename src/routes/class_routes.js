@@ -1,17 +1,16 @@
 const express = require('express');
 const classRouter = express.Router();
-// const Class = require('../models/class');
-// const {authenticateUser} = require('../middlewares/authMiddlewares')
 const {createClass, getTeacherClasses, getTeacherClass} = require('../controllers/class_controller')
+const { isAuthenticated } = require('../middlewares/user_middleware')
 
 
 // Create a class for the authenticated teacher user
-classRouter.post('/', createClass);
+classRouter.post('/', isAuthenticated, createClass);
 
 // Route for getting a teacher user's classes
-classRouter.get('/get-classes', getTeacherClasses);
+classRouter.get('/get-classes', isAuthenticated, getTeacherClasses);
 
 // Router for getting a specific class for a teacher user
-classRouter.get('/get-class/:classId', getTeacherClass)
+classRouter.get('/get-class/:classId', isAuthenticated, getTeacherClass)
 
 module.exports = classRouter;
