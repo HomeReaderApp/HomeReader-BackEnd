@@ -6,6 +6,11 @@ const teacherUserSchema = new mongoose.Schema({
     schoolName: { type: String, required: true },
     username: { type: String, unique: true, required: true },
     password: { type: String, required: true },
+    classes: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Class'
+    }]
+
   });
 
 const TeacherUser = mongoose.model('teacherUser', teacherUserSchema);

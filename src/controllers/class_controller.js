@@ -1,18 +1,21 @@
 const Class = require('../models/class');
+const TeacherUser = require("../models/teacherUser")
 
 // Controller method for creating a new class
 async function createClass(request, response) {
+  let user = await TeacherUser.findOne({username: request.user.username})
   try {
     // Create a new instance of the Class model
-    const newClass = new Class({
-      className: request.body.className,
-      teacherId: request.body.teacherId
+    let newClass = new Class({
+      className: request.body.className
     });
 
     // Save the new class to the database
-    const savedClass = await newClass.save();
+    await newClass.save();
+    user.classes.push(newClass._id)
+    await user.save()
 
-    response.status(201).json(savedClass);
+    response.status(201).json(newClass);
   } catch (error) {
     console.error('Error creating class:', error);
     response.status(500).json({ error: 'Failed to create class' });

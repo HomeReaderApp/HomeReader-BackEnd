@@ -5,11 +5,11 @@ const classSchema = new mongoose.Schema({
     type: String, 
     required: true 
   },
-  teacherId: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'TeacherUser', 
-    required: true
-  },
+  // teacherId: { 
+  //   type: mongoose.Schema.Types.ObjectId, 
+  //   ref: 'TeacherUser', 
+  //   required: true
+  // },
 });
 
   const Class = mongoose.model('Class', classSchema)

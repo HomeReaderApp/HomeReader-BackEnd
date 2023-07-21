@@ -11,4 +11,15 @@ const createToken = (user_id, username) => {
     )
 }
 
-module.exports = {createToken}
+const verifyToken = (token) => {
+    try{
+        return jwt.verify(token, process.env.JWT_SECRET_KEY)
+    } catch (error) {
+        throw new Error("Invalid token")
+    }
+}
+
+module.exports = {
+    createToken,
+    verifyToken
+}
