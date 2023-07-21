@@ -14,11 +14,11 @@ const studentSchema = new mongoose.Schema({
         required: true,
         unique: true 
     },
-    classId: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Class', 
-        required: true 
-    },
+    // classId: { 
+    //     type: mongoose.Schema.Types.ObjectId, 
+    //     ref: 'Class', 
+    //     required: true 
+    // },
   });
   
   // Create the Student model

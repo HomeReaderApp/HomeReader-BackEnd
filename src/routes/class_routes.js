@@ -9,9 +9,9 @@ const {createClass, getTeacherClasses, getTeacherClass} = require('../controller
 classRouter.post('/', createClass);
 
 // Route for getting a teacher user's classes
-classRouter.get('/:teacherId', getTeacherClasses);
+classRouter.get('/get-classes', getTeacherClasses);
 
 // Router for getting a specific class for a teacher user
-classRouter.get('/:teacherId/:className', getTeacherClass)
+classRouter.get('/get-class/:classId', getTeacherClass)
 
 module.exports = classRouter;

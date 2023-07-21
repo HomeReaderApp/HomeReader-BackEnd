@@ -7,9 +7,12 @@ const classSchema = new mongoose.Schema({
   },
   // teacherId: { 
   //   type: mongoose.Schema.Types.ObjectId, 
-  //   ref: 'TeacherUser', 
-  //   required: true
-  // },
+  //   ref: 'TeacherUser'
+  // }
+  students: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Student'
+  }]
 });
 
   const Class = mongoose.model('Class', classSchema)

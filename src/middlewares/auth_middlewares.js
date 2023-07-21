@@ -2,7 +2,6 @@
 const { verifyToken } = require('../services/auth_services')
 
 const validateRequest = (request, response, next) => {
-    console.log(request.headers)
     try {
         if(request.headers.authorization){
             const token = request.headers.authorization.split(" ")[1]
