@@ -18,7 +18,11 @@ const studentSchema = new mongoose.Schema({
         type: String, 
         required: true,
         unique: true 
-    }
+    },
+    readingData: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ReadingData'
+      }]
    
   });
   
