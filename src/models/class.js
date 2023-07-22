@@ -5,11 +5,14 @@ const classSchema = new mongoose.Schema({
     type: String, 
     required: true 
   },
-  teacherId: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'TeacherUser', 
-    required: true
-  },
+  // teacherId: { 
+  //   type: mongoose.Schema.Types.ObjectId, 
+  //   ref: 'TeacherUser'
+  // }
+  students: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Student'
+  }]
 });
 
   const Class = mongoose.model('Class', classSchema)

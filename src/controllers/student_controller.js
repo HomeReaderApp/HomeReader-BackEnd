@@ -1,20 +1,24 @@
 const Student = require('../models/student');
+const TeacherUser = require('../models/teacherUser')
+const Class = require('../models/class')
 
 // Create a new student
 const createStudent = async (request, response) => {
   try {
+  
     // Create a new instance of the Student model
     const newStudent = new Student({
       studentName: request.body.studentName,
       yearLevel: request.body.yearLevel,
-      loginCode: request.body.loginCode,
-      classId: request.body.classId
+      loginCode: request.body.loginCode
     });
 
     // Save the new student to the database
-    const savedStudent = await newStudent.save();
+    await newStudent.save();
+    request.targetClass.students.push(newStudent._id);
+    await request.targetClass.save()
 
-    response.status(201).json(savedStudent);
+    response.status(201).json(newStudent);
   } catch (error) {
     response.status(500).json({ error: error.message });
   }
@@ -23,17 +27,14 @@ const createStudent = async (request, response) => {
 // Update a student by ID
 const updateStudent = async (request, response) => {
     try {
-      // Retrieve the student ID from the request parameters
-      const studentId = request.params.studentId;
   
       // Find the student by ID and update its properties
       const updatedStudent = await Student.findByIdAndUpdate(
-        studentId,
+       request.targetStudent._id,
         {
           studentName: request.body.studentName,
           yearLevel: request.body.Level,
           loginCode: request.body.loginCode,
-          classId: request.body.classId
         },
         { new: true }
       );
@@ -48,9 +49,19 @@ const updateStudent = async (request, response) => {
 // Delete a student by ID
 const deleteStudent = async (request, response) => {
     try {
-  
+      // const studentId = request.params.studentId
+      // const existingStudent = await Student.findById(studentId)
+      
       // Find the student by ID and remove it
-      await Student.findByIdAndRemove(request.params.studentId);
+      // const existingStudent = request.params.studentId
+    
+      await Class.updateMany(
+        { students: request.targetStudent._id },
+        { $pull: { students: request.targetStudent._id } }
+      );
+      // await Student.findByIdAndRemove(existingStudent);
+      await Student.deleteOne({ _id: request.targetStudent._id })
+      
   
       response.status(200).json({ message: 'Student deleted successfully' });
     } catch (error) {
@@ -62,14 +73,15 @@ const deleteStudent = async (request, response) => {
 // Get all students in a class
 const getStudentsByClass = async (request, response) => {
   try {
-    // Find all students with the given classId
-    const students = await Student.find({ classId: request.params.classId });
+    
+    // Find all students in the class using the student IDs stored in the 'students' array
+    const students = await Student.find({ _id: { $in: request.targetClass.students } });
 
     response.status(200).json(students);
   } catch (error) {
     response.status(500).json({ error: error.message });
   }
-};
+}
 
 module.exports = { 
     createStudent, 
