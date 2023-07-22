@@ -8,7 +8,8 @@ const createStudent = async (request, response) => {
   
     // Create a new instance of the Student model
     const newStudent = new Student({
-      studentName: request.body.studentName,
+      firstName: request.body.firstName,
+      lastName: request.body.lastName,
       yearLevel: request.body.yearLevel,
       loginCode: request.body.loginCode
     });
@@ -32,7 +33,8 @@ const updateStudent = async (request, response) => {
       const updatedStudent = await Student.findByIdAndUpdate(
        request.targetStudent._id,
         {
-          studentName: request.body.studentName,
+          firstName: request.body.firstName,
+          lastName: request.body.lastName,
           yearLevel: request.body.Level,
           loginCode: request.body.loginCode,
         },
@@ -49,11 +51,6 @@ const updateStudent = async (request, response) => {
 // Delete a student by ID
 const deleteStudent = async (request, response) => {
     try {
-      // const studentId = request.params.studentId
-      // const existingStudent = await Student.findById(studentId)
-      
-      // Find the student by ID and remove it
-      // const existingStudent = request.params.studentId
     
       await Class.updateMany(
         { students: request.targetStudent._id },

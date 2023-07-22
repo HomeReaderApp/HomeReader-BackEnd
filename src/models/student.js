@@ -1,10 +1,15 @@
 const mongoose = require('mongoose')
 
 const studentSchema = new mongoose.Schema({
-    studentName: { 
+    firstName: { 
         type: String, 
         required: true 
     },
+    lastName: {
+        type: String,
+        required: true
+    },
+
     yearLevel: { 
         type: Number, 
         required: true 
@@ -13,12 +18,8 @@ const studentSchema = new mongoose.Schema({
         type: String, 
         required: true,
         unique: true 
-    },
-    // classId: { 
-    //     type: mongoose.Schema.Types.ObjectId, 
-    //     ref: 'Class', 
-    //     required: true 
-    // },
+    }
+   
   });
   
   // Create the Student model
