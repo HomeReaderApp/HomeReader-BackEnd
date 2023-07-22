@@ -5,11 +5,7 @@ const Class = require('../models/class')
 // Create a new student
 const createStudent = async (request, response) => {
   try {
-  let user = await TeacherUser.findById(request.user.user_id)
-  let classId = await request.params.classId
-  if (!user.classes.includes(classId)) {
-    return response.status(403).json({ error: 'You are not authorized to modify this class.' });
-  }
+  
     // Create a new instance of the Student model
     const newStudent = new Student({
       studentName: request.body.studentName,
@@ -31,12 +27,10 @@ const createStudent = async (request, response) => {
 // Update a student by ID
 const updateStudent = async (request, response) => {
     try {
-      // Retrieve the student ID from the request parameters
-      const studentId = request.params.studentId;
   
       // Find the student by ID and update its properties
       const updatedStudent = await Student.findByIdAndUpdate(
-        studentId,
+       request.targetStudent._id,
         {
           studentName: request.body.studentName,
           yearLevel: request.body.Level,
@@ -55,20 +49,18 @@ const updateStudent = async (request, response) => {
 // Delete a student by ID
 const deleteStudent = async (request, response) => {
     try {
-      const studentId = request.params.studentId
-      const existingStudent = await Student.findById(studentId)
+      // const studentId = request.params.studentId
+      // const existingStudent = await Student.findById(studentId)
       
       // Find the student by ID and remove it
       // const existingStudent = request.params.studentId
-      if (!existingStudent) {
-        return response.status(404).json({ error: 'Student not found.' });
-      }
+    
       await Class.updateMany(
-        { students: studentId },
-        { $pull: { students: studentId } }
+        { students: request.targetStudent._id },
+        { $pull: { students: request.targetStudent._id } }
       );
       // await Student.findByIdAndRemove(existingStudent);
-      await Student.deleteOne({ _id: studentId })
+      await Student.deleteOne({ _id: request.targetStudent._id })
       
   
       response.status(200).json({ message: 'Student deleted successfully' });
@@ -81,23 +73,9 @@ const deleteStudent = async (request, response) => {
 // Get all students in a class
 const getStudentsByClass = async (request, response) => {
   try {
-    let user = await TeacherUser.findById(request.user.user_id)
-    const classId = request.params.classId;
-
-    // Find the class by its _id
-    const targetClass = await Class.findById(classId);
-
-    if (!targetClass) {
-      return response.status(404).json({ error: 'Class not found.' });
-    }
-
-    // Check if the authenticated user owns the class
-    if (!user.classes.includes(classId)) {
-      return response.status(403).json({ error: 'You are not authorized to access this class.' });
-    }
-
+    
     // Find all students in the class using the student IDs stored in the 'students' array
-    const students = await Student.find({ _id: { $in: targetClass.students } });
+    const students = await Student.find({ _id: { $in: request.targetClass.students } });
 
     response.status(200).json(students);
   } catch (error) {
