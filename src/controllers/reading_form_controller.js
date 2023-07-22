@@ -34,6 +34,16 @@ async function getBooksReadByStudent(request, response) {
   }
 }
 
+// Function to get all comments from a student
+async function getCommentsByStudent(request, response) {
+  try {
+    const commentsByStudent = await ReadingFormData.find({ student: request.params.studentId }).select('comments');
+    response.status(200).json(commentsByStudent);
+  } catch (error) {
+    response.status(500).json({ error: 'Failed to get comments from the student.' });
+  }
+}
+
 
 // Function not working yet
 // async function getCommentsByClass(request, response) {
@@ -63,5 +73,6 @@ async function getBooksReadByStudent(request, response) {
 module.exports = { 
     postReadingForm,
     getBooksReadByStudent ,
+    getCommentsByStudent
     // getCommentsByClass,
 };
