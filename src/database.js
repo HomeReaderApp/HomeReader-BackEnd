@@ -12,3 +12,9 @@ module.exports = {
     databaseConnector, 
     databaseDisconnector
 }
+
+module.exports = {
+  databaseConnector,
+  databaseDisconnector,
+};
+
