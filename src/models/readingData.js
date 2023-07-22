@@ -20,7 +20,12 @@ const readingFormDataSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Student', 
     required: true },
-});
+  // class: {
+  //   type: mongoose.Schema.Types.ObjectId, 
+  //   ref: 'Class', 
+  //   required: true },
+  }
+);
 
 const ReadingFormData = mongoose.model('ReadingFormData', readingFormDataSchema);
 

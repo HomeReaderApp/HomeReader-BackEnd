@@ -1,9 +1,11 @@
 const ReadingFormData = require('../models/readingData');
 const Student = require('../models/student')
+const Class = require('../models/class')
 
 // Controller function for handling the POST request
 async function postReadingForm(request, response) {
-  
+  let cl = await Class.find({student: request.targetStudent._id})
+  console.log(cl)
   try {
     const newReadingForm = new ReadingFormData({
       bookName: request.body.bookName,
@@ -44,35 +46,47 @@ async function getCommentsByStudent(request, response) {
   }
 }
 
+// Not working
+async function getFavouriteBooks(request, response){
+  try{
+    const favouriteBooks = await ReadingFormData.find({classId: request.params.classId, rating:5})
 
-// Function not working yet
-// async function getCommentsByClass(request, response) {
-//   const classId = request.params.classId;
+  } catch (error) {
+    response.status(500).json({ error: 'Failed to get books' });
 
-//   try {
-//     const studentsInClass = await Student.find({ class: classId }, '_id');
-//     const studentIds = studentsInClass.map((student) => student._id);
-//     const commentsByClass = await ReadingFormData.find({ student: { $in: studentIds } })
-//       .populate('student', 'firstName') 
-//       .select('comments');
+  }
+}
 
-//     const commentsList = commentsByClass.map((item) => {
-//       return {
-//         studentName: item.student.firstName,
-//         comments: item.comments,
-//       };
-//     });
+async function getCommentsForClass(req, res){
+  console.log(req.params.classId)
+  try {
+    const classId = req.params.classId;
+    console.log('Requested Class ID:', classId);
 
-//     response.status(200).json(commentsList);
-//   } catch (error) {
-//     response.status(500).json({ error: 'Failed to get comments by class.' });
-//   }
-// }
+    const readingFormDataList = await ReadingFormData.find({
+      'student.class': classId,
+      comments: { $exists: true, $ne: '' }
+    }).populate('student', 'firstName lastName');
+    console.log('Fetched Reading Form Data:', readingFormDataList);
+
+    const comments = readingFormDataList.map(entry => ({
+      studentName: `${entry.student.firstName} ${entry.student.lastName}`,
+      comment: entry.comments
+    }));
+    console.log('Extracted Comments:', comments);
+
+    res.status(200).json(comments);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Unable to fetch comments for the class.' });
+  }
+};
 
 
 module.exports = { 
     postReadingForm,
     getBooksReadByStudent ,
-    getCommentsByStudent
-    // getCommentsByClass,
+    getCommentsByStudent,
+    getFavouriteBooks,
+    getCommentsForClass
 };
