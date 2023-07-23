@@ -76,16 +76,14 @@ app.get('/', (request, response) => {
 const teacherUserRouter = require('./routes/teacher_routes.js')
 app.use('/teacher', teacherUserRouter)
 
+const studentUserRouter = require('./routes/student_login_routes.js')
+app.use('/student-user', studentUserRouter)
+
 const validateRequest = require("./middlewares/auth_middlewares.js")
 app.use(validateRequest)
 
 const classRouter = require('./routes/class_routes.js');
 app.use('/class', classRouter)
-
-// app.use((err, req, res, next) => {
-// 	console.error('Error:', err.message);
-// 	res.status(500).json({ error: 'Internal Server Error' });
-//   })
 
 const studentRouter = require('./routes/student_routes.js')
 app.use('/student', studentRouter)

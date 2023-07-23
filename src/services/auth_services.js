@@ -11,6 +11,16 @@ const createToken = (user_id, username) => {
     )
 }
 
+const createStudentToken = (user_id) => {
+    return jwt.sign(
+        {
+        user_id: user_id,
+        },
+        process.env.JWT_SECRET_KEY,
+        {expiresIn: "1d"}
+    )
+}
+
 const verifyToken = (token) => {
     try{
         return jwt.verify(token, process.env.JWT_SECRET_KEY)
@@ -21,5 +31,6 @@ const verifyToken = (token) => {
 
 module.exports = {
     createToken,
-    verifyToken
+    verifyToken,
+    createStudentToken,
 }

@@ -42,7 +42,7 @@ async function getTeacherClass(request, response) {
   let classId = request.params.classId
   try {
     // Find the specified class by its ID and teacherId
-    const teacherClass = await Class.findById(classId);
+    const teacherClass = await Class.findById(classId).populate('students', 'firstName lastName');
 
     if (!teacherClass) {
       return response.status(404).json({ error: 'Class not found' });
