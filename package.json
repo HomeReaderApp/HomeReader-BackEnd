@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --detectOpenHandles",
-    "test-cc": "jest --coverage",
+    "test-cc": "jest --coverage --detectOpenHandles --cc --reporters='default' --reporters='./tests/GithubActionReporter'",
     "start": "NODE_ENV=production node src/index.js",
     "dev": "nodemon src/index.js",
     "seed": "SEED=true WIPE=true NODE_ENV=development node src/seeds.js"

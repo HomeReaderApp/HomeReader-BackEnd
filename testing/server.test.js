@@ -1,7 +1,7 @@
 
 const request = require('supertest');
 const { app } = require('../src/server');
-// require('./testSetup')
+require('./testSetup')
 
 describe("Has a homepage...", () => {
   it('...responds with status 200', async () => {
