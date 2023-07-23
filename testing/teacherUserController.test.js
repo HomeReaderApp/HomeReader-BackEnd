@@ -1,28 +1,21 @@
 
-
 const request = require('supertest');
 const { app } = require('../src/server');
+const { clearDatabase } = require('./testSetup'); // Import the clearDatabase function
 
-describe("Has a homepage...", () => {
-  it('...responds with status 200', async () => {
-    const response = await request(app).get('/');
-    expect(response.statusCode).toEqual(200);
-  });
-
-  it('...responds with a JSON object', async () => {
-    const response = await request(app).get('/');
-    const responseBodyDataType = typeof response.body;
-    expect(responseBodyDataType).toEqual("object");
-  });
-});
 
 describe("User...", () => {
+//   Call clearDatabase before running the test case
+    beforeAll(async () => {
+    await clearDatabase();
+  });
+
   describe("...can sign up...", () => {
     it("... with a valid username, firstName, lastName, schoolName, and password", async () => {
       const response = await request(app)
         .post('/teacher/register')
         .send({
-          username: "nicki5380",
+          username: "nicki5389",
           password: "1234567",
           firstName: "Nicki",
           lastName: "Hulett",

@@ -45,11 +45,11 @@ switch(process.env.NODE_ENV.toLowerCase()){
 		console.error("Wrong environment mode, database cannot connect");
 }
 
-const {databaseConnector} = require("./database.js")
+const {databaseConnector} = require("./database")
 databaseConnector(databaseURL).then(() =>{
-	console.log("Connected to the HomeReader DB!")
+	console.log("Connected to the Database at" + " " + databaseURL)
 }).catch(error => {
-	console.log("Could not connect to the db!")
+	console.log("could not connect to the database!")
 	console.log(error)
 })
 
