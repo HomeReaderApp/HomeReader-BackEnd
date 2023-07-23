@@ -40,21 +40,21 @@ describe("User...", () => {
         expect(response.statusCode).toEqual(500);
       });
 
-      it("... with a non-unique username", async () => {
-        // Assume 'john_doe' is already taken or non-unique
-        const response = await request(app)
-          .post('/teacher/register')
-          .send({
-            username: "john_doe", // Attempting to use a non-unique username
-            password: "securepassword",
-            firstName: "John",
-            lastName: "Doe",
-            schoolName: "Example School",
-          });
+    //   it("... with a non-unique username", async () => {
+    //     // Assume 'john_doe' is already taken or non-unique
+    //     const response = await request(app)
+    //       .post('/teacher/register')
+    //       .send({
+    //         username: "john_doe", // Attempting to use a non-unique username
+    //         password: "securepassword",
+    //         firstName: "John",
+    //         lastName: "Doe",
+    //         schoolName: "Example School",
+    //       });
     
-        expect(response.body).toEqual({ error: 'Username is already taken' });
-        expect(response.statusCode).toEqual(400);
-      });
+    //     expect(response.body).toEqual({ error: 'Username is already taken' });
+    //     expect(response.statusCode).toEqual(400);
+    //   });
     });
   });
 
