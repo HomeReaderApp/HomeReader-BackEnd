@@ -4,12 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --detectOpenHandles",
     "test-cc": "jest --coverage",
     "start": "NODE_ENV=production node src/index.js",
     "dev": "nodemon src/index.js",
-    "seed": "SEED=true NODE_ENV=development node src/seeds.js",
-    "wipe": "WIPE=true NODE_ENV=development node src/seeds.js"
+    "seed": "SEED=true WIPE=true NODE_ENV=development node src/seeds.js"
+
   },
   "keywords": [],
   "author": "",
