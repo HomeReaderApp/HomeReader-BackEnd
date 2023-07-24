@@ -4,7 +4,7 @@ const Class = require('../models/class')
 
 // Controller function for handling the POST request
 async function postReadingForm(request, response) {
-  let cl = await Class.find({student: request.targetStudent._id})
+  let cl = await Class.find({students: request.targetStudent._id})
   console.log(cl)
   try {
     const newReadingForm = new ReadingFormData({
@@ -16,9 +16,11 @@ async function postReadingForm(request, response) {
     });
 
     await newReadingForm.save()
+    console.log(newReadingForm)
     request.targetStudent.readingData.push(newReadingForm._id);
     await request.targetStudent.save()
-    response.status(201).json({ message: 'Reading form submitted successfully.' });
+    response.status(201).json({ message: 'Reading form submitted successfully.',
+  readingForm: newReadingForm });
   } catch (error) {
     response.status(500).json({ error: 'Failed to submit reading form.' });
   }

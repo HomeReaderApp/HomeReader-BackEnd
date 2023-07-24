@@ -19,10 +19,12 @@ const studentSchema = new mongoose.Schema({
         required: true,
         unique: true 
     },
-    readingData: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'ReadingData'
-      }]
+    readingData: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'ReadingFormData',
+        },
+      ]
    
   });
   

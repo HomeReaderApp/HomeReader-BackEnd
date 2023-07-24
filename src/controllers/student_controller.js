@@ -1,6 +1,7 @@
 const Student = require('../models/student');
 const TeacherUser = require('../models/teacherUser')
 const Class = require('../models/class')
+const ReadingFormData = require('../models/readingData')
 
 // Create a new student
 const createStudent = async (request, response) => {
@@ -80,11 +81,30 @@ const getStudentsByClass = async (request, response) => {
   }
 }
 
+// Get student and their reading data by student ID
+const getStudentWithReadingData = async (req, res) => {
+  try {
+    const studentId = req.params.studentId;
+
+    // Find the student by ID and populate the 'readingData' field
+    const studentWithReadingData = await Student.findById(studentId).populate('readingData');
+
+    if (!studentWithReadingData) {
+      return res.status(404).json({ message: 'Student not found' });
+    }
+
+    res.status(200).json(studentWithReadingData);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
 module.exports = { 
     createStudent, 
     updateStudent,
     deleteStudent,
-    getStudentsByClass 
+    getStudentsByClass,
+    getStudentWithReadingData 
 };
 
 
