@@ -48,6 +48,8 @@ async function getCommentsByStudent(request, response) {
   }
 }
 
+// Get all reading data from the class
+
 // Not working
 async function getFavouriteBooks(request, response){
   try{

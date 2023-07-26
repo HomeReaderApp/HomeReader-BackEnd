@@ -10,7 +10,7 @@ async function studentUserLogin(request, response) {
       }
   
       if(user.lastName === request.body.lastName){
-        const token = createStudentToken(user._id)
+        const token = createStudentToken(user._id, user.firstName)
         return response.json({
           firstName: user.firstName,
           lastName: user.lastName,

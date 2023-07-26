@@ -11,10 +11,11 @@ const createToken = (user_id, username) => {
     )
 }
 
-const createStudentToken = (user_id) => {
+const createStudentToken = (user_id, firstName) => {
     return jwt.sign(
         {
         user_id: user_id,
+        firstName: firstName
         },
         process.env.JWT_SECRET_KEY,
         {expiresIn: "1d"}

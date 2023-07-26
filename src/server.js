@@ -21,7 +21,7 @@ app.use(helmet.contentSecurityPolicy({
 
 const cors = require('cors')
 let corsOptions = {
-	// origin: ["http://localhost:3000", "https://bespoke-klepon-bc5d33.netlify.app"],
+	origin: ["http://localhost:3000", "https://bespoke-klepon-bc5d33.netlify.app"],
 	optionsSuccessStatus: 200
 }
 
@@ -46,10 +46,11 @@ switch(process.env.NODE_ENV.toLowerCase()){
 }
 
 const {databaseConnector} = require("./database")
+
 databaseConnector(databaseURL).then(() =>{
 	console.log("Connected to the Database at" + " " + databaseURL)
 }).catch(error => {
-	console.log("could not connect to the database!")
+	console.log("Could not connect to the database!")
 	console.log(error)
 })
 
@@ -77,7 +78,7 @@ const teacherUserRouter = require('./routes/teacher_routes.js')
 app.use('/teacher', teacherUserRouter)
 
 const studentUserRouter = require('./routes/student_login_routes.js')
-app.use('/student-user', studentUserRouter)
+app.use('/student', studentUserRouter)
 
 const validateRequest = require("./middlewares/auth_middlewares.js")
 app.use(validateRequest)
@@ -86,7 +87,7 @@ const classRouter = require('./routes/class_routes.js');
 app.use('/class', classRouter)
 
 const studentRouter = require('./routes/student_routes.js')
-app.use('/student', studentRouter)
+app.use('/', studentRouter)
 
 const readingDataRouter = require("./routes/reading_data_routes.js")
 app.use('/', readingDataRouter)
