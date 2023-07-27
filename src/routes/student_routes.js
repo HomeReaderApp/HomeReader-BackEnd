@@ -5,13 +5,13 @@ const { getBooksReadByStudent, getCommentsByStudent, getFavouriteBooks, getComme
 const { isAuthenticated, isClassOwner } = require('../middlewares/user_middleware')
 const { isStudentExist } = require('../middlewares/student_middleware')
 
-studentRouter.post('/:classId', isAuthenticated, isClassOwner, createStudent)
+studentRouter.post('/:classId/add-student', isAuthenticated, isClassOwner, createStudent)
 
 studentRouter.put('/:studentId', isAuthenticated, isStudentExist, updateStudent)
 
 studentRouter.delete('/:studentId', isAuthenticated, isStudentExist, deleteStudent)
 
-studentRouter.get('/:classId', isAuthenticated, isClassOwner, getStudentsByClass)
+studentRouter.get('/get-students-by-class/:classId', isAuthenticated, isClassOwner, getStudentsByClass)
 
 studentRouter.get('/reading-data/:studentId', isAuthenticated, getBooksReadByStudent)
 

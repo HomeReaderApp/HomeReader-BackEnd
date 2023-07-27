@@ -7,7 +7,7 @@ async function createClass(request, response) {
   try {
     // Create a new instance of the Class model
     let newClass = new Class({
-      className: request.body.className
+      className: request.body.className,
     });
 
     // Save the new class to the database
