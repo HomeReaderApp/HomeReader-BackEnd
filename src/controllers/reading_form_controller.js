@@ -61,30 +61,83 @@ async function getFavouriteBooks(request, response){
   }
 }
 
-async function getCommentsForClass(req, res){
-  console.log(req.params.classId)
-  try {
-    const classId = req.params.classId;
-    console.log('Requested Class ID:', classId);
+async function getComments(request, response) {
+  let classId = request.params.classId;
 
+  try {
+    // Find the specified class by its ID and populate the 'students' field.
+    const teacherClass = await Class.findById(classId).populate('students');
+
+    if (!teacherClass) {
+      return response.status(404).json({ error: 'Class not found' });
+    }
+
+    // Extract all student IDs from the Class document.
+    const studentIds = teacherClass.students.map(student => student._id);
+
+    // Find all ReadingFormData entries where the student ID matches the ones in the class.
     const readingFormDataList = await ReadingFormData.find({
-      'student.class': classId,
+      'student': { $in: studentIds },
       comments: { $exists: true, $ne: '' }
     }).populate('student', 'firstName lastName');
-    console.log('Fetched Reading Form Data:', readingFormDataList);
 
+    // Extract and format the comments.
     const comments = readingFormDataList.map(entry => ({
       studentName: `${entry.student.firstName} ${entry.student.lastName}`,
-      comment: entry.comments
+      bookName: entry.bookName,
+      comment: entry.comments,
+      date: entry.date
     }));
-    console.log('Extracted Comments:', comments);
 
-    res.status(200).json(comments);
+    response.status(200).json(comments);
   } catch (error) {
     console.error('Error:', error);
-    res.status(500).json({ error: 'Unable to fetch comments for the class.' });
+    response.status(500).json({ error: 'Unable to fetch comments for the class.' });
   }
-};
+}
+
+async function getFavouriteBooks(request, response) {
+  let classId = request.params.classId;
+
+  try {
+    // Find the specified class by its ID and populate the 'students' field.
+    const teacherClass = await Class.findById(classId).populate('students');
+
+    if (!teacherClass) {
+      return response.status(404).json({ error: 'Class not found' });
+    }
+
+    // Extract all student IDs from the Class document.
+    const studentIds = teacherClass.students.map(student => student._id);
+
+    // Find all ReadingFormData entries where the student ID matches the ones in the class.
+    const readingFormDataList = await ReadingFormData.find({
+      'student': { $in: studentIds },
+      comments: { $exists: true, $ne: '' }
+    }).populate('student', 'firstName lastName');
+
+    // Extract and format the comments.
+    const comments = readingFormDataList.map(entry => ({
+      studentName: `${entry.student.firstName} ${entry.student.lastName}`,
+      bookName: entry.bookName,
+      comment: entry.comments,
+      date: entry.date,
+      rating: entry.rating // Include the book rating in the comments list
+    }));
+
+    // Filter the comments to only include books with a rating of 5.
+    const favouriteBooks = comments.filter(comment => comment.rating === 5);
+
+    response.status(200).json(favouriteBooks);
+  } catch (error) {
+    console.error('Error:', error);
+    response.status(500).json({ error: 'Unable to fetch favourite books for the class.' });
+  }
+}
+
+
+
+
 
 
 module.exports = { 
@@ -92,5 +145,6 @@ module.exports = {
     getBooksReadByStudent ,
     getCommentsByStudent,
     getFavouriteBooks,
-    getCommentsForClass
+    getComments,
+    getFavouriteBooks
 };

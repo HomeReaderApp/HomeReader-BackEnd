@@ -35,7 +35,6 @@ const getStudentById = async (req, res) => {
     const studentId =  req.targetStudent._id
 
     // Find the student by ID using Mongoose
-    // const student = await Student.findById(studentId);
     const student = await Student.findById(studentId).populate('readingData');
 
     if (!student) {
@@ -107,43 +106,11 @@ const deleteStudent = async (request, response) => {
 };
 
 
-// Get all students in a class/ think this is duplicated in the class router
-// const getStudentsByClass = async (request, response) => {
-//   try {
-    
-//     // Find all students in the class using the student IDs stored in the 'students' array
-//     const students = await Student.find({ _id: { $in: request.targetClass.students } });
-
-//     response.status(200).json(students);
-//   } catch (error) {
-//     response.status(500).json({ error: error.message });
-//   }
-// }
-
-// Get student and their reading data by student ID
-const getStudentWithReadingData = async (req, res) => {
-  try {
-    const studentId = req.params.studentId;
-
-    // Find the student by ID and populate the 'readingData' field
-    const studentWithReadingData = await Student.findById(studentId).populate('readingData');
-
-    if (!studentWithReadingData) {
-      return res.status(404).json({ message: 'Student not found' });
-    }
-
-    res.status(200).json(studentWithReadingData);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-}
-
 module.exports = { 
     createStudent, 
     updateStudent,
     deleteStudent,
-    getStudentById,
-    getStudentWithReadingData 
+    getStudentById
 };
 
 
