@@ -1,7 +1,7 @@
 const express = require('express')
 const studentRouter = express.Router()
 const { createStudent, getStudentById, updateStudent, deleteStudent } = require('../controllers/student_controller')
-const { getBooksReadByStudent, getFavouriteBooks } = require('../controllers/reading_form_controller')
+const { getFavouriteBooks } = require('../controllers/reading_form_controller')
 const { isAuthenticated, isClassOwner } = require('../middlewares/user_middleware')
 const { isStudentExist } = require('../middlewares/student_middleware')
 
@@ -12,8 +12,6 @@ studentRouter.put('/update-student/:studentId', isAuthenticated, isStudentExist,
 studentRouter.delete('/delete-student/:studentId', isAuthenticated, isStudentExist, deleteStudent)
 
 studentRouter.get('/get-student/:studentId', isAuthenticated, isStudentExist, getStudentById)
-
-studentRouter.get('/reading-data/:studentId', isAuthenticated, getBooksReadByStudent)
 
 studentRouter.get('/favourite-books/:classId', isAuthenticated, getFavouriteBooks)
 

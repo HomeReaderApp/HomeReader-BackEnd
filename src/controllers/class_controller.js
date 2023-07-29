@@ -23,6 +23,7 @@ async function createClass(request, response) {
   }
 }
 
+// Get a teachers classes (all)
 async function getTeacherClasses(request, response){
   try{
     let classes = request.currentUser.classes
