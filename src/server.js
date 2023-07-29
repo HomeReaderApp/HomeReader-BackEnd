@@ -84,7 +84,7 @@ const validateRequest = require("./middlewares/auth_middlewares.js")
 app.use(validateRequest)
 
 const classRouter = require('./routes/class_routes.js');
-app.use('/class', classRouter)
+app.use('/', classRouter)
 
 const studentRouter = require('./routes/student_routes.js')
 app.use('/', studentRouter)

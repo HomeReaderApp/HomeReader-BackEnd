@@ -5,10 +5,10 @@ const { isAuthenticated } = require('../middlewares/user_middleware')
 
 
 // Create a class for the authenticated teacher user
-classRouter.post('/', isAuthenticated, createClass);
+classRouter.post('/create-class', isAuthenticated, createClass);
 
 // Route for getting a teacher user's classes
-classRouter.get('/get-classes', isAuthenticated, getTeacherClasses);
+classRouter.get('/:teacherId/get-classes', isAuthenticated, getTeacherClasses);
 
 // Router for getting a specific class for a teacher user
 classRouter.get('/get-class/:classId', isAuthenticated, getTeacherClass)

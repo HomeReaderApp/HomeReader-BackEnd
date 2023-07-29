@@ -7,7 +7,7 @@ async function createClass(request, response) {
   try {
     // Create a new instance of the Class model
     let newClass = new Class({
-      className: request.body.className
+      className: request.body.className,
     });
 
     // Save the new class to the database
@@ -23,6 +23,7 @@ async function createClass(request, response) {
   }
 }
 
+// Get a teachers classes (all)
 async function getTeacherClasses(request, response){
   try{
     let classes = request.currentUser.classes
@@ -42,7 +43,7 @@ async function getTeacherClass(request, response) {
   let classId = request.params.classId
   try {
     // Find the specified class by its ID and teacherId
-    const teacherClass = await Class.findById(classId).populate('students', 'firstName lastName');
+    const teacherClass = await Class.findById(classId).populate('students', 'firstName lastName loginCode');
 
     if (!teacherClass) {
       return response.status(404).json({ error: 'Class not found' });
