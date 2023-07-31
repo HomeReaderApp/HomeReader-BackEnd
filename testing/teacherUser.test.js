@@ -1,4 +1,3 @@
-
 const request = require('supertest');
 const { app } = require('../src/server');
 const { clearDatabase } = require('./testSetup'); // Import the clearDatabase function
@@ -57,4 +56,3 @@ describe("User...", () => {
     //   });
     });
   });
-

@@ -7,7 +7,7 @@
     "test": "jest --detectOpenHandles",
     "test-cc": "jest --coverage --detectOpenHandles --ci --reporters='default' --reporters='./testing/GitHubActionsReporter'",
     "start": "NODE_ENV=production node src/index.js",
-    "dev": "nodemon src/index.js",
+    "dev": "nodemon NODE_ENV=development src/index.js",
     "seed": "SEED=true WIPE=true NODE_ENV=development node src/seeds.js"
 
   },
