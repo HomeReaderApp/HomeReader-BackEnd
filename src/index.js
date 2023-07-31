@@ -4,10 +4,11 @@ const {app, PORT, HOST} = require('./server')
 //     console.log("Express server is running on port" + PORT)
 // })
 
-const server = app.listen(PORT, () => {
-    if (server.address().port != PORT){
-		PORT = server.address().port;
-	}
+app.listen(PORT, () => {
+    // if (server.address().port != PORT){
+	// 	PORT = server.address().port;
+	// }
+	
 
 	console.log(`	
 	Express server is now running!
