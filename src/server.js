@@ -80,8 +80,8 @@ app.use('/teacher', teacherUserRouter)
 const studentUserRouter = require('./routes/student_login_routes.js')
 app.use('/student', studentUserRouter)
 
-// const validateRequest = require("./middlewares/auth_middlewares.js")
-// app.use(validateRequest)
+const validateRequest = require("./middlewares/auth_middlewares.js")
+app.use(validateRequest)
 
 const classRouter = require('./routes/class_routes.js');
 app.use('/', classRouter)
