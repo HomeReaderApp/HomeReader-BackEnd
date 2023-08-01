@@ -52,7 +52,7 @@ async function getTeacherClass(request, response) {
     response.status(200).json(teacherClass);
   } catch (error) {
     console.error('Error retrieving class:', error);
-    response.status(500).json({ error: 'Failed to retrieve class' });
+    response.status(404).json({ error: 'Failed to retrieve class' });
   }
 }
 
