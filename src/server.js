@@ -21,7 +21,7 @@ app.use(helmet.contentSecurityPolicy({
 
 const cors = require('cors')
 let corsOptions = {
-	origin: ["http://localhost:3000", "https://main--scintillating-eclair-9aa967.netlify.app"],
+	origin: ["http://localhost:3000", "https://main--scintillating-eclair-9aa967.netlify.app", "https://home-reader.com"],
 	optionsSuccessStatus: 200
 }
 
