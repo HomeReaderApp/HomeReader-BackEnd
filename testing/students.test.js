@@ -1,134 +1,123 @@
+
+const { databaseDisconnector } = require('../src/database');
+
+
 const request = require('supertest');
 const { app } = require('../src/server');
+const Class = require('../src/models/class');
 const Student = require('../src/models/student');
 const TeacherUser = require('../src/models/teacherUser');
-const Class = require('../src/models/class');
-const { databaseDisconnector } = require('../src/database');
-const { createToken } = require('../src/services/auth_services'); // Import the function to create a token
+const { createToken } = require('../src/services/auth_services');
 
-describe("Student Routes", () => {
-  let teacherToken;
+// Function to clear the test database
+async function clearTestDatabase() {
+  await TeacherUser.deleteMany({});
+  await Class.deleteMany({});
+  await Student.deleteMany({})
+}
 
-  beforeEach(async () => {
-    // Clear the student and class collections before each test to start with a clean state
-    await Student.deleteMany();
-    await Class.deleteMany();
+describe("Classes", () => {
+  // Create a test teacher user and class for testing
+  let teacherUser;
+  let testClass;
 
-    // Create a new teacher user and get the token for authentication
-    const newUser = {
+  beforeAll(async () => {
+    // Clear the test database before running the tests
+    await clearTestDatabase();
+
+    teacherUser = new TeacherUser({
       firstName: "John",
       lastName: "Doe",
-      schoolName: "ABC School",
-      username: "john.doe",
-      password: "password1",
+      schoolName: "Test School",
+      username: "testuser",
+      password: "testpassword",
+    });
+
+    testClass = new Class({
+      className: "Test Class",
+    });
+
+    await teacherUser.save();
+    await testClass.save();
+
+    // Add the test class to the teacher's classes array
+    teacherUser.classes.push(testClass);
+    await teacherUser.save();
+  });
+
+  it('should create a new student', async () => {
+    // Generate a token for the teacher user
+    const token = createToken(teacherUser._id, teacherUser.username);
+
+    const response = await request(app)
+      .post(`/${testClass._id}/add-student`)
+      .send({ 
+        firstName: "Nicole",
+        lastName: "hulett",
+        loginCode: "aaaa",
+        yearLevel: 1 
+      })
+      .set('Authorization', `Bearer ${token}`);
+    
+    expect(response.statusCode).toEqual(201);
+    expect(response.body).toHaveProperty('firstName', 'Nicole');
+  });
+
+  it('should return an error for duplicate login code', async () => {
+    // Create a student with the same login code as the one used in the first test
+    const requestBody = {
+      firstName: 'Tessa',
+      lastName: 'Hayward',
+      yearLevel: 2,
+      loginCode: "aaaa",
     };
-    const userResponse = await request(app).post('/teacher/register').send(newUser);
-    expect(userResponse.status).toBe(201);
-    expect(userResponse.body).toHaveProperty('token');
-    teacherToken = userResponse.body.token;
+    
+    // Generate a token for the teacher user
+    const token = createToken(teacherUser._id, teacherUser.username);
+    
+    // Add the duplicate student using the same login code
+    const response = await request(app)
+      .post(`/${testClass._id}/add-student`)
+      .send(requestBody)
+      .set('Authorization', `Bearer ${token}`);
+    
+    expect(response.statusCode).toEqual(400);
+    expect(response.body).toHaveProperty('error', 'The login code you entered is not unique. Please choose a different one.');
   });
 
+  it('should return an error for missing required fields', async () => {
+    // Omit the required 'firstName' field from the request body
+    const requestBody = {
+      lastName: 'MissingField',
+      yearLevel: 3,
+      loginCode: 6666,
+    };
+    
+    // Generate a token for the teacher user
+    const token = createToken(teacherUser._id, teacherUser.username);
+    
+    // Attempt to add the student with missing 'firstName'
+    const response = await request(app)
+      .post(`/${testClass._id}/add-student`)
+      .send(requestBody)
+      .set('Authorization', `Bearer ${token}`);
+    
+    expect(response.statusCode).toEqual(500);
+
+  });
+  // Clean up the test data after all tests have completed
   afterAll(async () => {
-    await databaseDisconnector();
+    await clearTestDatabase();
   });
 
-  describe("POST /teacher/create-student", () => {
-    it("should respond with status 201 and create a new student", async () => {
-      // Create a new class for the teacher
-      const newClass = {
-        className: "Math Class",
-      };
-      const classResponse = await request(app)
-        .post('/teacher/create-class')
-        .set('Authorization', `Bearer ${teacherToken}`)
-        .send(newClass);
-      expect(classResponse.status).toBe(201);
-      expect(classResponse.body).toHaveProperty('className', newClass.className);
-
-      // Create a new student for the class
-      const newStudent = {
-        firstName: "Jane",
-        lastName: "Smith",
-        yearLevel: "10",
-        loginCode: "student123",
-      };
-      const response = await request(app)
-        .post('/teacher/create-student')
-        .set('Authorization', `Bearer ${teacherToken}`)
-        .send(newStudent);
-      expect(response.status).toBe(201);
-      expect(response.body).toHaveProperty('firstName', newStudent.firstName);
-
-      // Check if the student exists in the test database
-      const studentFromDb = await Student.findById(response.body._id);
-      expect(studentFromDb).toBeDefined();
-
-      // Check if the student is associated with the class
-      const updatedClass = await Class.findById(classResponse.body._id);
-      expect(updatedClass.students).toContain(studentFromDb._id);
-    });
-
-    it("should respond with status 400 if the login code is not unique", async () => {
-      // Create a new class for the teacher
-      const newClass = {
-        className: "Math Class",
-      };
-      const classResponse = await request(app)
-        .post('/teacher/create-class')
-        .set('Authorization', `Bearer ${teacherToken}`)
-        .send(newClass);
-      expect(classResponse.status).toBe(201);
-      expect(classResponse.body).toHaveProperty('className', newClass.className);
-
-      // Create a new student with a non-unique login code for the class
-      const newStudent1 = {
-        firstName: "Jane",
-        lastName: "Smith",
-        yearLevel: "10",
-        loginCode: "student123",
-      };
-      const newStudent2 = {
-        firstName: "John",
-        lastName: "Doe",
-        yearLevel: "11",
-        loginCode: "student123", // Same login code as the first student
-      };
-      const response1 = await request(app)
-        .post('/teacher/create-student')
-        .set('Authorization', `Bearer ${teacherToken}`)
-        .send(newStudent1);
-      expect(response1.status).toBe(201);
-      expect(response1.body).toHaveProperty('firstName', newStudent1.firstName);
-
-      // Attempt to create another student with the same login code for the same class
-      const response2 = await request(app)
-        .post('/teacher/create-student')
-        .set('Authorization', `Bearer ${teacherToken}`)
-        .send(newStudent2);
-      expect(response2.status).toBe(400);
-      expect(response2.body).toHaveProperty(
-        'error',
-        'The login code you entered is not unique. Please choose a different one.'
-      );
-
-      // Check if only the first student exists in the test database (not the second one)
-      const studentsFromDb = await Student.find();
-      expect(studentsFromDb).toHaveLength(1);
-      expect(studentsFromDb[0].firstName).toBe(newStudent1.firstName);
-    });
-
-    it("should respond with status 401 if the request is not authenticated", async () => {
-      const newStudent = {
-        firstName: "Jane",
-        lastName: "Smith",
-        yearLevel: "10",
-        loginCode: "student123",
-      };
-      const response = await request(app).post('/teacher/create-student').send(newStudent);
-      expect(response.status).toBe(401);
-      expect(response.body).toHaveProperty('error', 'Unauthorized');
-    });
+   afterAll(async () => {
+    await databaseDisconnector()
   });
-
-  // Add tests for other controller methods (getStudentById, updateStudent, deleteStudent) similarly
 });
+
+
+
+
+
+
+

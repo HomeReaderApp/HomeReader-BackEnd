@@ -1,181 +1,91 @@
-
 const request = require('supertest');
 const { app } = require('../src/server');
 const TeacherUser = require('../src/models/teacherUser');
-const { databaseDisconnector } = require('../src/database');
-const bcrypt = require('bcrypt')
+const Class = require('../src/models/class');
+const { createToken } = require('../src/services/auth_services'); 
+const { databaseDisconnector } = require('../src/database')
 
-describe("Teacher Routes", () => {
-  beforeEach(async () => {
-    // Clear the teacherUser collection before each test to start with a clean state
-    await TeacherUser.deleteMany();
+// Function to clear the test database
+async function clearTestDatabase() {
+  await TeacherUser.deleteMany({});
+  await Class.deleteMany({});
+}
+
+describe("TeacherUser Endpoints", () => {
+  // Create a test teacher user and class for testing
+  let teacherUser;
+  let testClass;
+
+  beforeAll(async () => {
+    // Clear the test database before running the tests
+    await clearTestDatabase();
+
+    teacherUser = new TeacherUser({
+      firstName: "John",
+      lastName: "Doe",
+      schoolName: "Test School",
+      username: "testuser",
+      password: "testpassword",
+    });
+
+    testClass = new Class({
+      className: "Test Class",
+    });
+
+    await teacherUser.save();
+    await testClass.save();
+
+    // Add the test class to the teacher's classes array
+    teacherUser.classes.push(testClass);
+    await teacherUser.save();
   });
 
-  describe("GET /teacher", () => {
-    it("should respond with status 200 and return an empty array when there are no teacher users", async () => {
-      const response = await request(app).get('/teacher');
-      expect(response.status).toBe(200);
-      expect(response.body.teacherUsers).toEqual([]);
-    });
-
-    it("should respond with status 200 and return a list of teacher users", async () => {
-      // Add some teacher users to the test database
-      const teacherUsers = [
-        { firstName: "John", lastName: "Doe", schoolName: "ABC School", username: "john.doe", password: "password1" },
-        { firstName: "Jane", lastName: "Smith", schoolName: "XYZ School", username: "jane.smith", password: "password2" }
-      ];
-      await TeacherUser.create(teacherUsers);
-
-      const response = await request(app).get('/teacher');
-      expect(response.status).toBe(200);
-      expect(response.body.teacherUsers).toHaveLength(2);
-    });
+  // Clean up the test data after all tests have completed
+  afterAll(async () => {
+    await clearTestDatabase();
   });
 
-  describe("POST /teacher/register", () => {
-    it("should respond with status 201 and create a new teacher user", async () => {
-      const newUser = {
-        firstName: "John",
-        lastName: "Doe",
-        schoolName: "ABC School",
-        username: "john.doe",
-        password: "password1"
-      };
+  it('should create a new class', async () => {
+    // Generate a token for the teacher user
+    const token = createToken(teacherUser._id, teacherUser.username);
 
-      const response = await request(app)
-        .post('/teacher/register')
-        .send(newUser);
-
-      expect(response.status).toBe(201);
-      expect(response.body).toHaveProperty('token');
-
-      // Check if the user exists in the test database
-      const user = await TeacherUser.findOne({ username: newUser.username });
-      expect(user).toBeDefined();
-    });
-
-    it("should respond with status 400 if the username is already taken", async () => {
-      // Add a user with the same username to the test database
-      await TeacherUser.create({ firstName: "John", lastName: "Doe", schoolName: "School", username: "john.doe", password: "password1" });
-
-      const newUser = {
-        firstName: "Jane",
-        lastName: "Smith",
-        schoolName: "Other School",
-        username: "john.doe", // Same username as the existing user
-        password: "password2"
-      };
-
-      const response = await request(app)
-        .post('/teacher/register')
-        .send(newUser);
-
-      expect(response.status).toBe(400);
-      expect(response.body).toHaveProperty('error', 'Username is already taken');
-    });
-  });
-
-  describe("POST /teacher/login", () => {
-    beforeEach(async () => {
-      // Add a test teacher user with a known password for login tests
-      const testUser = {
-        firstName: "John",
-        lastName: "Doe",
-        schoolName: "Test School",
-        username: "testuser",
-        password: bcrypt.hashSync("testpassword", bcrypt.genSaltSync(10))
-      };
-      await TeacherUser.create(testUser);
-    });
-
-    it("should respond with status 200 and return a JWT token upon successful login", async () => {
-      const loginCredentials = {
-        username: "testuser",
-        password: "testpassword"
-      };
-
-      const response = await request(app)
-        .post('/teacher/login')
-        .send(loginCredentials);
-
-      expect(response.status).toBe(200);
-      expect(response.body).toHaveProperty('token');
-    });
-
-    it("should respond with status 401 if the username is invalid", async () => {
-      const loginCredentials = {
-        username: "nonexistentuser",
-        password: "testpassword"
-      };
-
-      const response = await request(app)
-        .post('/teacher/login')
-        .send(loginCredentials);
-
-      expect(response.status).toBe(401);
-      expect(response.body).toHaveProperty('error', 'Invalid username');
-    });
-
-    it("should respond with status 401 if the password is incorrect", async () => {
-      const loginCredentials = {
-        username: "testuser",
-        password: "wrongpassword"
-      };
-
-      const response = await request(app)
-        .post('/teacher/login')
-        .send(loginCredentials);
-
-// describe("User...", () => {
-// //   Call clearDatabase before running the test case
-//     beforeAll(async () => {
-//     await clearDatabase();
-//   });
-
-//   describe("...can sign up...", () => {
-//     it("... with a valid username, firstName, lastName, schoolName, and password", async () => {
-//       const response = await request(app)
-//         .post('/teacher/register')
-//         .send({
-//           username: "nicki5389",
-//           password: "1234567",
-//           firstName: "Nicki",
-//           lastName: "Hulett",
-//           schoolName: "Osbornes PS",
-//         });
-
-//       expect(response.body).toEqual({ message: "User registered successfully", token: expect.any(String) });
-//       expect(response.statusCode).toEqual(201);
-//     });
-
-//     it("... with incomplete information", async () => {
-//         const response = await request(app)
-//           .post('/teacher/register')
-//           .send({
-//             username: "john_doe",
-//             password: "password123",
-//             firstName: "John",
-//             // Last name and school name are missing
-//           });
+    const response = await request(app)
+      .post('/create-class')
+      .send({ className: "New Class" })
+      .set('Authorization', `Bearer ${token}`);
     
-//         expect(response.body).toEqual({ error: 'Failed to register user' });
-//         expect(response.statusCode).toEqual(500);
-//       });
+    expect(response.statusCode).toEqual(201);
+    expect(response.body).toHaveProperty('className', 'New Class');
+  });
 
-    //   it("... with a non-unique username", async () => {
-    //     // Assume 'john_doe' is already taken or non-unique
-    //     const response = await request(app)
-    //       .post('/teacher/register')
-    //       .send({
-    //         username: "john_doe", // Attempting to use a non-unique username
-    //         password: "securepassword",
-    //         firstName: "John",
-    //         lastName: "Doe",
-    //         schoolName: "Example School",
-    //       });
+  it('should get teacher classes', async () => {
+    // Generate a token for the teacher user
+    const token = createToken(teacherUser._id, teacherUser.username);
+
+    const response = await request(app)
+      .get(`/${teacherUser._id}/get-classes`)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.statusCode).toEqual(200);
+    expect(response.body).toBeInstanceOf(Array);
+    expect(response.body.length).toEqual(2); // The test teacher user should have one class
+  });
+
+  it('should get a specific class for a teacher', async () => {
+    // Generate a token for the teacher user
+    const token = createToken(teacherUser._id, teacherUser.username);
+
+    const response = await request(app)
+      .get(`/get-class/${testClass._id}`)
+      .set('Authorization', `Bearer ${token}`);
     
-    //     expect(response.body).toEqual({ error: 'Username is already taken' });
-    //     expect(response.statusCode).toEqual(400);
-    //   });
-//     });
-//   });
+    expect(response.statusCode).toEqual(200);
+    expect(response.body).toHaveProperty('className', testClass.className);
+  });
+
+  afterAll(async () => {
+    await databaseDisconnector()
+  });
+
+});
+

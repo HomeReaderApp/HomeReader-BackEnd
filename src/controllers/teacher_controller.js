@@ -4,12 +4,12 @@ const TeacherUser = require('../models/teacherUser')
 const { createToken } = require("../services/auth_services")
 
 // This function gets a list of all teacher users
-const getTeacherUsers = async (request, response) => {
-    let teacherUsers = await TeacherUser.find()
-    response.json({
-        teacherUsers: teacherUsers
-    })
-}
+// const getTeacherUsers = async (request, response) => {
+//     let teacherUsers = await TeacherUser.find()
+//     response.json({
+//         teacherUsers: teacherUsers
+//     })
+// }
 
 // // This function will register a new user with a firstName, lastName, username, password and school
 // // First it will check if the user already exists, then create and save the user, then log them in.
@@ -114,7 +114,7 @@ async function logoutUser(request, response) {
   // }
   
 module.exports = {
-    getTeacherUsers,
+    // getTeacherUsers,
     registerUser,
     loginUser,
     logoutUser
