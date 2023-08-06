@@ -90,6 +90,28 @@ async function logoutUser(request, response) {
       return response.status(500).json({ error: 'Failed to logout' });
     }
   }
+
+  // async function logoutUser(request, response) {
+  //   try {
+  //     // Get the token from the request headers
+  //     const token = request.headers.authorization;
+  
+  //     if (!token) {
+  //       // If no token is provided, return a 401 status
+  //       return response.status(401).json({ error: 'No token provided' });
+  //     }
+  
+  //     // Clear the token on the client-side by setting it to an empty string
+  //     // In a real application, you might want to handle this on the client-side appropriately.
+  //     // For example, if using cookies for storing the token, you can clear the cookie.
+  
+  //     // Return a success message
+  //     return response.json({ message: 'Logout successful' });
+  //   } catch (error) {
+  //     // Handle any errors that occur during logout
+  //     return response.status(500).json({ error: 'Failed to logout' });
+  //   }
+  // }
   
 module.exports = {
     getTeacherUsers,

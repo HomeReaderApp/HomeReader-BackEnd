@@ -22,11 +22,11 @@ const createStudentToken = (user_id, firstName) => {
     )
 }
 
-const verifyToken = (token) => {
+const verifyToken = (token, response) => {
     try{
         return jwt.verify(token, process.env.JWT_SECRET_KEY)
     } catch (error) {
-        res.status(401).json({ error: 'Invalid token' })
+        response.status(401).json({ error: 'Invalid token' })
     }
 }
 

@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>15/15</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>15/15</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
@@ -85,60 +85,45 @@
 <a name='L20'></a><a href='#L20'>20</a>
 <a name='L21'></a><a href='#L21'>21</a>
 <a name='L22'></a><a href='#L22'>22</a>
-<a name='L23'></a><a href='#L23'>23</a>
-<a name='L24'></a><a href='#L24'>24</a>
-<a name='L25'></a><a href='#L25'>25</a>
-<a name='L26'></a><a href='#L26'>26</a>
-<a name='L27'></a><a href='#L27'>27</a>
-<a name='L28'></a><a href='#L28'>28</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<a name='L23'></a><a href='#L23'>23</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span></td><td class="text"><pre class="prettyprint lang-js">const express = require('express')
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span></td><td class="text"><pre class="prettyprint lang-js">const express = require('express')
 const studentRouter = express.Router()
-const { createStudent, updateStudent, deleteStudent, getStudentsByClass } = require('../controllers/student_controller')
-const { getBooksReadByStudent, getCommentsByStudent, getFavouriteBooks, getCommentsForClass } = require('../controllers/reading_form_controller')
+const { createStudent, getStudentById, updateStudent, deleteStudent } = require('../controllers/student_controller')
+const { getFavouriteBooks } = require('../controllers/reading_form_controller')
 const { isAuthenticated, isClassOwner } = require('../middlewares/user_middleware')
 const { isStudentExist } = require('../middlewares/student_middleware')
 &nbsp;
-studentRouter.post('/:classId', isAuthenticated, isClassOwner, createStudent)
+studentRouter.post('/:classId/add-student', isAuthenticated, isClassOwner, createStudent)
 &nbsp;
-studentRouter.put('/:studentId', isAuthenticated, isStudentExist, updateStudent)
+studentRouter.put('/update-student/:studentId', isAuthenticated, isStudentExist, updateStudent)
 &nbsp;
-studentRouter.delete('/:studentId', isAuthenticated, isStudentExist, deleteStudent)
+studentRouter.delete('/delete-student/:studentId', isAuthenticated, isStudentExist, deleteStudent)
 &nbsp;
-studentRouter.get('/:classId', isAuthenticated, isClassOwner, getStudentsByClass)
-&nbsp;
-studentRouter.get('/reading-data/:studentId', isAuthenticated, getBooksReadByStudent)
-&nbsp;
-studentRouter.get('/comments/:studentId', isAuthenticated, getCommentsByStudent)
+studentRouter.get('/get-student/:studentId', isAuthenticated, isStudentExist, getStudentById)
 &nbsp;
 studentRouter.get('/favourite-books/:classId', isAuthenticated, getFavouriteBooks)
 &nbsp;
-studentRouter.get('/comments/:classId', isAuthenticated, getCommentsForClass)
 &nbsp;
 &nbsp;
 &nbsp;
@@ -151,7 +136,7 @@ module.exports = studentRouter</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-07-23T09:50:34.467Z
+                at 2023-08-02T12:15:31.355Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
