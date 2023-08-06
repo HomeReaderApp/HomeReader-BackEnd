@@ -29,7 +29,6 @@ async function getTeacherClasses(request, response){
     let classes = request.currentUser.classes
     const classNames = await Class.find({ _id: { $in: classes } })
     if (!classNames || classNames.length === 0) {
-      console.log('No classes found for the given user.')
       }
     response.status(200).json(classNames);
   } catch (error) {
@@ -52,7 +51,7 @@ async function getTeacherClass(request, response) {
     response.status(200).json(teacherClass);
   } catch (error) {
     console.error('Error retrieving class:', error);
-    response.status(500).json({ error: 'Failed to retrieve class' });
+    response.status(404).json({ error: 'Failed to retrieve class' });
   }
 }
 

@@ -8,7 +8,7 @@ const validateRequest = (request, response, next) => {
       if (!token) {
         throw new Error('A token is required for authentication');
       }
-      const decoded = verifyToken(token);
+      const decoded = verifyToken(token, response);
       request.user = decoded;
       next(); 
 
